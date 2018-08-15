@@ -637,6 +637,17 @@ namespace BinVer
         public PEOptionalHeaderType OptionalHeaderType
         { get; private set; }
 
+        /// <summary>
+        /// String Version of <see cref="OptionalHeaderType"/> 
+        /// </summary>
+        public string OptionalHeaderTypeName
+        {
+            get
+            {
+                return OptionalHeaderType.ToString();
+            }
+        }
+
         public OptionalHeaderData(BinaryReader BR)
         {
             OptionalHeaderType = (PEOptionalHeaderType)BR.ReadUInt16();
@@ -911,6 +922,28 @@ namespace BinVer
         public uint NumberOfRvaAndSizes
         { get; private set; }
 
+        /// <summary>
+        /// String Version of <see cref="Subsystem"/>
+        /// </summary>
+        public string SubsystemName
+        {
+            get
+            {
+                return Subsystem.ToString();
+            }
+        }
+
+        /// <summary>
+        /// String Version of <see cref="DllCharacteristics"/>
+        /// </summary>
+        public string[] DllCharacteristicsMap
+        {
+            get
+            {
+                return Tools.ExpandFlags(DllCharacteristics);
+            }
+        }
+
         public OptionalWindowsFields(BinaryReader BR, PEOptionalHeaderType HeaderType)
         {
             ImageBase = R(BR, HeaderType);
@@ -989,6 +1022,17 @@ namespace BinVer
         /// </summary>
         public uint Size
         { get; private set; }
+
+        /// <summary>
+        /// String Version of <see cref="EntryType"/>
+        /// </summary>
+        public string EntryTypeName
+        {
+            get
+            {
+                return EntryType.ToString();
+            }
+        }
 
         public DataDirectoryEntry(BinaryReader BR, DataDirectoryEntryType EntryType)
         {
@@ -1098,6 +1142,17 @@ namespace BinVer
         public PESectionFlags Characteristics
         { get; private set; }
 
+        /// <summary>
+        /// String Version of <see cref="Characteristics"/>
+        /// </summary>
+        public string[] CharacteristicsMap
+        {
+            get
+            {
+                return Tools.ExpandFlags(Characteristics);
+            }
+        }
+
         public PESection(BinaryReader BR)
         {
             //According to MS, the name must be UTF-8 encoded
@@ -1147,6 +1202,7 @@ namespace BinVer
         /// </summary>
         public int PEOffset
         { get; private set; }
+
         /// <summary>
         /// After the MS-DOS stub, at the file offset specified at offset 0x3c,
         /// is a 4-byte signature that identifies the file as a PE format image file.
@@ -1154,17 +1210,20 @@ namespace BinVer
         /// </summary>
         public bool ValidPEHeader
         { get; private set; }
+
         /// <summary>
         /// The number that identifies the type of target machine.
         /// </summary>
         public PEMachineType MachineType
         { get; private set; }
+
         /// <summary>
         /// The number of sections.
         /// This indicates the size of the section table, which immediately follows the headers.
         /// </summary>
         public ushort NumberOfSections
         { get; private set; }
+
         /// <summary>
         /// The low 32 bits of the number of seconds since 00:00 January 1, 1970 (a C run-time time_t value),
         /// that indicates when the file was created.
@@ -1172,12 +1231,14 @@ namespace BinVer
         /// <remarks>Also known as a Linux or Unix timestamp</remarks>
         public DateTime CompileTime
         { get; private set; }
+
         /// <summary>
         /// The file offset of the COFF symbol table, or zero if no COFF symbol table is present.
         /// This value should be zero for an image because COFF debugging information is deprecated.
         /// </summary>
         public uint PointerToSymbolTable
         { get; private set; }
+
         /// <summary>
         /// The number of entries in the symbol table.
         /// This data can be used to locate the string table,
@@ -1186,6 +1247,7 @@ namespace BinVer
         /// </summary>
         public uint NumberOfSymbols
         { get; private set; }
+
         /// <summary>
         /// The size of the optional header,
         /// which is required for executable files but not for object files.
@@ -1193,11 +1255,13 @@ namespace BinVer
         /// </summary>
         public ushort SizeOfOptionalHeader
         { get; private set; }
+
         /// <summary>
         /// The flags that indicate the attributes of the file.
         /// </summary>
         public PEImageCharacteristics Characteristics
         { get; private set; }
+
         /// <summary>
         /// Gets if this image has an optional Header
         /// </summary>
@@ -1209,6 +1273,28 @@ namespace BinVer
         /// </summary>
         public OptionalHeaderData OptionalHeader
         { get; private set; }
+
+        /// <summary>
+        /// String Version of <see cref="MachineType"/>
+        /// </summary>
+        public string MachineTypeName
+        {
+            get
+            {
+                return MachineType.ToString();
+            }
+        }
+
+        /// <summary>
+        /// String Version of <see cref="Characteristics"/>
+        /// </summary>
+        public string[] CharacteristicsMap
+        {
+            get
+            {
+                return Tools.ExpandFlags(Characteristics);
+            }
+        }
 
         public PESection[] Sections
         {

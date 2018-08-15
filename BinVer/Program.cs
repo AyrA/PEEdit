@@ -11,6 +11,16 @@ namespace BinVer
     {
         static void Main(string[] args)
         {
+#if DEBUG
+            if(args==null || args.Length==0)
+            {
+                args = new string[]
+                {
+                    "/F",
+                    @"C:\Apache24\bin\httpd.exe"
+                };
+            }
+#endif
             if (args == null || args.Length == 0 || args.Any(m => m == "/?"))
             {
                 ShowHelp();
@@ -19,10 +29,22 @@ namespace BinVer
             {
                 var Format = args.Any(m => m.ToUpper() == "/F");
                 var UseArray = args.Any(m => m.ToUpper() == "/A");
-                args = args.Where(m => m.ToUpper() != "/F" && m.ToUpper() != "/A").ToArray();
+                args = args
+                    .Where(m => m.ToUpper() != "/F" && m.ToUpper() != "/A")
+                    .SelectMany(m => ParseFileArguments(m))
+                    .ToArray();
 
                 if (args.Length == 1 && !UseArray)
                 {
+                    try
+                    {
+                        Console.WriteLine(JsonConvert.SerializeObject(new PE(args[0]), Format ? Formatting.Indented : Formatting.None));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Error.WriteLine($"Unable to parse {args[0]} as PE file. Error: {ex.Message}");
+                        Console.WriteLine("null");
+                    }
                 }
                 else
                 {
@@ -39,7 +61,7 @@ namespace BinVer
                             Info.Add(args[i], null);
                         }
                     }
-                    Console.Write(JsonConvert.SerializeObject(Info, Format ? Formatting.Indented : Formatting.None));
+                    Console.WriteLine(JsonConvert.SerializeObject(Info, Format ? Formatting.Indented : Formatting.None));
                 }
             }
 #if DEBUG
@@ -47,7 +69,23 @@ namespace BinVer
 #endif
         }
 
+        public static string[] ParseFileArguments(string Arg)
+        {
+            List<string> FileNames = new List<string>();
+            if (!string.IsNullOrEmpty(Arg))
+            {
+                if (Arg.Any(m => m == '?' || m == '*'))
+                {
+                    FileNames.AddRange(AyrA.IO.MaskMatch.Match(Path.Combine(Environment.CurrentDirectory, Arg), AyrA.IO.MatchType.File));
+                }
+                else
+                {
+                    FileNames.Add(Path.GetFullPath(Arg));
+                }
 
+            }
+            return FileNames.ToArray();
+        }
 
         private static void ShowHelp()
         {
