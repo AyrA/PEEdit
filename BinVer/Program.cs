@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Linq;
 
 namespace BinVer
 {
@@ -6,13 +8,18 @@ namespace BinVer
     {
         static void Main(string[] args)
         {
-            var P = new PE(@"C:\Tools\Apps\gifsicle-1.88-win64\gifsicle.exe");
-            Console.Write("Is64={0}", P.MachineType.HasFlag(PEMachineType.IMAGE_FILE_MACHINE_AMD64));
-            foreach(var Section in P.Sections)
+            if (args == null || args.Length == 0 || args.Any(m => m == "/?"))
             {
-                Console.WriteLine(Section.Name);
+
             }
+            else
+            {
+                var P = new PE(@"C:\Apache24\bin\httpd.exe");
+                Console.WriteLine(JsonConvert.SerializeObject(P, Formatting.Indented));
+            }
+#if DEBUG
             Console.ReadKey(true);
+#endif
         }
     }
 }
