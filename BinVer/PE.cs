@@ -616,18 +616,18 @@ namespace BinVer
         /// Fields that are defined for all implementations of COFF, including UNIX.
         /// </summary>
         public OptionalStandardFields StandardFields
-        { get; private set; }
+        { get; set; }
         /// <summary>
         /// Additional fields to support specific features of Windows (for example, subsystems).
         /// </summary>
         public OptionalWindowsFields WindowsFields
-        { get; private set; }
+        { get; set; }
         /// <summary>
         /// Address/size pairs for special tables that are found in the image file
         /// and are used by the operating system (for example, the import table and the export table).
         /// </summary>
         public OptionalDataDirectories DataDirectories
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The unsigned integer that identifies the state of the image file.
@@ -635,7 +635,7 @@ namespace BinVer
         /// 0x107 identifies it as a ROM image, and 0x20B identifies it as a PE32+ executable.
         /// </summary>
         public PEOptionalHeaderType OptionalHeaderType
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// String Version of <see cref="OptionalHeaderType"/> 
@@ -684,21 +684,21 @@ namespace BinVer
         /// or the sum of all code sections if there are multiple sections.
         /// </summary>
         public uint SizeOfCode
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The size of the initialized data section,
         /// or the sum of all such sections if there are multiple data sections.
         /// </summary>
         public uint SizeOfInitializedData
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The size of the uninitialized data section (BSS),
         /// or the sum of all such sections if there are multiple BSS sections.
         /// </summary>
         public uint SizeOfUninitializedData
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The address of the entry point relative to the image base when
@@ -708,14 +708,14 @@ namespace BinVer
         /// When no entry point is present, this field must be zero.
         /// </summary>
         public uint AddressOfEntryPoint
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The address that is relative to the image base of the beginning-of-code section
         /// when it is loaded into memory.
         /// </summary>
         public uint BaseOfCode
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The address that is relative to the image base of the beginning-of-data section
@@ -723,7 +723,7 @@ namespace BinVer
         /// </summary>
         /// <remarks>This is a <see cref="PEOptionalHeaderType.PEPlus"/> only field</remarks>
         public uint BaseOfData
-        { get; private set; }
+        { get; set; }
 
         public OptionalStandardFields(BinaryReader BR, PEOptionalHeaderType HeaderType)
         {
@@ -786,7 +786,7 @@ namespace BinVer
         /// Windows 2000, Windows XP, Windows 95, Windows 98, and Windows Me is 0x00400000.
         /// </summary>
         public ulong ImageBase
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The alignment (in bytes) of sections when they are loaded into memory.
@@ -794,7 +794,7 @@ namespace BinVer
         /// The default is the page size for the architecture. 
         /// </summary>
         public uint SectionAlignment
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The alignment factor (in bytes) that is used to align the raw data of sections in the image file.
@@ -803,63 +803,63 @@ namespace BinVer
         /// then FileAlignment must match SectionAlignment. 
         /// </summary>
         public uint FileAlignment
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The major version number of the required operating system.
         /// </summary>
         public ushort MajorOperatingSystemVersion
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The minor version number of the required operating system.
         /// </summary>
         public ushort MinorOperatingSystemVersion
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The major version number of the image.
         /// </summary>
         public ushort MajorImageVersion
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The minor version number of the image.
         /// </summary>
         public ushort MinorImageVersion
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The major version number of the subsystem.
         /// </summary>
         public ushort MajorSubsystemVersion
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The minor version number of the subsystem.
         /// </summary>
         public ushort MinorSubsystemVersion
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// Reserved, must be zero.
         /// </summary>
         public uint Win32VersionValue
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The size (in bytes) of the image, including all headers, as the image is loaded in memory.
         /// It must be a multiple of SectionAlignment.
         /// </summary>
         public uint SizeOfImage
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The combined size of an MS-DOS stub, PE header,
         /// and section headers rounded up to a multiple of FileAlignment.
         /// </summary>
         public uint SizeOfHeaders
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The image file checksum. The algorithm for computing the checksum is incorporated into IMAGHELP.DLL.
@@ -868,32 +868,32 @@ namespace BinVer
         /// and any DLL that is loaded into a critical Windows process.
         /// </summary>
         public uint CheckSum
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The subsystem that is required to run this image.
         /// </summary>
         public PEWindowsSubsystem Subsystem
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// DLL Loading Characteristics
         /// </summary>
         public PEDllCharacteristics DllCharacteristics
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The size of the stack to reserve. Only SizeOfStackCommit is committed;
         /// the rest is made available one page at a time until the reserve size is reached.
         /// </summary>
         public ulong SizeOfStackReserve
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The size of the stack to commit.
         /// </summary>
         public ulong SizeOfStackCommit
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The size of the local heap space to reserve.
@@ -901,26 +901,26 @@ namespace BinVer
         /// the rest is made available one page at a time until the reserve size is reached.
         /// </summary>
         public ulong SizeOfHeapReserve
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The size of the local heap space to commit.
         /// </summary>
         public ulong SizeOfHeapCommit
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// Reserved, must be zero.
         /// </summary>
         public uint LoaderFlags
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The number of data-directory entries in the remainder of the optional header.
         /// Each describes a location and size.
         /// </summary>
         public uint NumberOfRvaAndSizes
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// String Version of <see cref="Subsystem"/>
@@ -1009,19 +1009,19 @@ namespace BinVer
         /// Type of this Data Directory Entry
         /// </summary>
         public DataDirectoryEntryType EntryType
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// This is actually the RVA of the table.
         /// The RVA is the address of the table relative to the base address of the image when the table is loaded.
         /// </summary>
         public uint VirtualAddress
-        { get; private set; }
+        { get; set; }
         /// <summary>
         /// This field gives the size in bytes.
         /// </summary>
         public uint Size
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// String Version of <see cref="EntryType"/>
@@ -1065,7 +1065,7 @@ namespace BinVer
         /// Long names in object files are truncated if they are emitted to an executable file.
         /// </summary>
         public string Name
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The total size of the section when loaded into memory.
@@ -1073,7 +1073,7 @@ namespace BinVer
         /// This field is valid only for executable images and should be set to zero for object files.
         /// </summary>
         public uint VirtualSize
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// For executable images,
@@ -1084,7 +1084,7 @@ namespace BinVer
         /// Otherwise, it is an arbitrary value that is subtracted from offsets during relocation.
         /// </summary>
         public uint VirtualAddress
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The size of the section (for object files)
@@ -1096,7 +1096,7 @@ namespace BinVer
         /// When a section contains only uninitialized data, this field should be zero.
         /// </summary>
         public uint SizeOfRawData
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The file pointer to the first page of the section within the COFF file.
@@ -1105,14 +1105,14 @@ namespace BinVer
         /// When a section contains only uninitialized data, this field should be zero.
         /// </summary>
         public uint PointerToRawData
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The file pointer to the beginning of relocation entries for the section.
         /// This is set to zero for executable images or if there are no relocations.
         /// </summary>
         public uint PointerToRelocations
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The file pointer to the beginning of line-number entries for the section.
@@ -1120,27 +1120,27 @@ namespace BinVer
         /// This value should be zero for an image because COFF debugging information is deprecated.
         /// </summary>
         public uint PointerToLinenumbers
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The number of relocation entries for the section.
         /// This is set to zero for executable images.
         /// </summary>
         public uint NumberOfRelocations
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The number of line-number entries for the section.
         /// This value should be zero for an image because COFF debugging information is deprecated.
         /// </summary>
         public ushort NumberOfLinenumbers
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The flags that describe the characteristics of the section.
         /// </summary>
         public PESectionFlags Characteristics
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// String Version of <see cref="Characteristics"/>
@@ -1201,7 +1201,7 @@ namespace BinVer
         /// Offset from File start of the PE header
         /// </summary>
         public int PEOffset
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// After the MS-DOS stub, at the file offset specified at offset 0x3c,
@@ -1209,20 +1209,20 @@ namespace BinVer
         /// This signature is "PE\0\0" (the letters "P" and "E" followed by two null bytes).
         /// </summary>
         public bool ValidPEHeader
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The number that identifies the type of target machine.
         /// </summary>
         public PEMachineType MachineType
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The number of sections.
         /// This indicates the size of the section table, which immediately follows the headers.
         /// </summary>
         public ushort NumberOfSections
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The low 32 bits of the number of seconds since 00:00 January 1, 1970 (a C run-time time_t value),
@@ -1230,14 +1230,14 @@ namespace BinVer
         /// </summary>
         /// <remarks>Also known as a Linux or Unix timestamp</remarks>
         public DateTime CompileTime
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The file offset of the COFF symbol table, or zero if no COFF symbol table is present.
         /// This value should be zero for an image because COFF debugging information is deprecated.
         /// </summary>
         public uint PointerToSymbolTable
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The number of entries in the symbol table.
@@ -1246,7 +1246,7 @@ namespace BinVer
         /// This value should be zero for an image because COFF debugging information is deprecated.
         /// </summary>
         public uint NumberOfSymbols
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The size of the optional header,
@@ -1254,13 +1254,13 @@ namespace BinVer
         /// This value should be zero for an object file.
         /// </summary>
         public ushort SizeOfOptionalHeader
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// The flags that indicate the attributes of the file.
         /// </summary>
         public PEImageCharacteristics Characteristics
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// Gets if this image has an optional Header
@@ -1272,7 +1272,7 @@ namespace BinVer
         /// Optional Header
         /// </summary>
         public OptionalHeaderData OptionalHeader
-        { get; private set; }
+        { get; set; }
 
         /// <summary>
         /// String Version of <see cref="MachineType"/>
