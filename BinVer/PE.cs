@@ -659,6 +659,15 @@ namespace BinVer
             WindowsFields = new OptionalWindowsFields(BR, OptionalHeaderType);
             DataDirectories = new OptionalDataDirectories(BR, (int)WindowsFields.NumberOfRvaAndSizes);
         }
+
+        public void WriteOptionalHeaders(BinaryWriter BW)
+        {
+            WindowsFields.NumberOfRvaAndSizes = (uint)DataDirectories.Entries.Length;
+            BW.Write((ushort)OptionalHeaderType);
+            StandardFields.WriteOptionalStandardFields(BW, OptionalHeaderType);
+            WindowsFields.WriteOptionalWindowsFields(BW, OptionalHeaderType);
+            DataDirectories.WriteDataDirectories(BW);
+        }
     }
 
     /// <summary>
@@ -742,6 +751,21 @@ namespace BinVer
             if (HeaderType == PEOptionalHeaderType.PE)
             {
                 BaseOfData = BR.ReadUInt32();
+            }
+        }
+
+        public void WriteOptionalStandardFields(BinaryWriter BW, PEOptionalHeaderType HeaderType)
+        {
+            BW.Write(_MajorLinkerVersion);
+            BW.Write(_MinorLikerVersion);
+            BW.Write(SizeOfCode);
+            BW.Write(SizeOfInitializedData);
+            BW.Write(SizeOfUninitializedData);
+            BW.Write(AddressOfEntryPoint);
+            BW.Write(BaseOfCode);
+            if (HeaderType == PEOptionalHeaderType.PE)
+            {
+                BW.Write(BaseOfData);
             }
         }
     }
@@ -989,6 +1013,43 @@ namespace BinVer
             NumberOfRvaAndSizes = BR.ReadUInt32() & int.MaxValue;
         }
 
+        public void WriteOptionalWindowsFields(BinaryWriter BW, PEOptionalHeaderType HeaderType)
+        {
+            W(BW, HeaderType, ImageBase);
+            BW.Write(SectionAlignment);
+            BW.Write(FileAlignment);
+            BW.Write(MajorOperatingSystemVersion);
+            BW.Write(MinorOperatingSystemVersion);
+            BW.Write(MajorImageVersion);
+            BW.Write(MinorImageVersion);
+            BW.Write(MajorSubsystemVersion);
+            BW.Write(MinorSubsystemVersion);
+            BW.Write(Win32VersionValue);
+            BW.Write(SizeOfImage);
+            BW.Write(SizeOfHeaders);
+            BW.Write(CheckSum);
+            BW.Write((ushort)Subsystem);
+            BW.Write((ushort)DllCharacteristics);
+            W(BW, HeaderType, SizeOfStackReserve);
+            W(BW, HeaderType, SizeOfStackCommit);
+            W(BW, HeaderType, SizeOfHeapReserve);
+            W(BW, HeaderType, SizeOfHeapCommit);
+            BW.Write(LoaderFlags);
+            BW.Write(NumberOfRvaAndSizes);
+        }
+
+        private void W(BinaryWriter BW, PEOptionalHeaderType HeaderType, ulong Value)
+        {
+            if (HeaderType == PEOptionalHeaderType.PEPlus)
+            {
+                BW.Write(Value);
+            }
+            else
+            {
+                BW.Write((uint)Value);
+            }
+        }
+
         private ulong R(BinaryReader BR, PEOptionalHeaderType HeaderType)
         {
             return HeaderType == PEOptionalHeaderType.PEPlus ? BR.ReadUInt64() : BR.ReadUInt32();
@@ -1013,6 +1074,14 @@ namespace BinVer
                 .Range(0, NumberOfEntries)
                 .Select(m => new DataDirectoryEntry(BR, (DataDirectoryEntryType)m))
                 .ToArray();
+        }
+
+        public void WriteDataDirectories(BinaryWriter BW)
+        {
+            foreach (var D in Entries)
+            {
+                D.WriteDataDirectory(BW);
+            }
         }
     }
 
@@ -1057,8 +1126,13 @@ namespace BinVer
             if (!Enum.IsDefined(EntryType.GetType(), EntryType))
             {
                 EntryType = DataDirectoryEntryType.Unknown;
-                //throw new ArgumentException($"{EntryType} is not a defined DataDirectoryEntryType");
             }
+        }
+
+        public void WriteDataDirectory(BinaryWriter BW)
+        {
+            BW.Write(VirtualAddress);
+            BW.Write(Size);
         }
 
     }
@@ -1140,7 +1214,7 @@ namespace BinVer
         /// The number of relocation entries for the section.
         /// This is set to zero for executable images.
         /// </summary>
-        public uint NumberOfRelocations
+        public ushort NumberOfRelocations
         { get; set; }
 
         /// <summary>
@@ -1169,7 +1243,7 @@ namespace BinVer
 
         public PESection(BinaryReader BR)
         {
-            //According to MS, the name must be UTF-8 encoded
+            //According to MS, the name must be UTF-8 encoded, 8 bytes long and 0 padded
             Name = Encoding.UTF8.GetString(BR.ReadBytes(8)).TrimEnd('\0');
             VirtualSize = BR.ReadUInt32();
             VirtualAddress = BR.ReadUInt32();
@@ -1180,6 +1254,21 @@ namespace BinVer
             NumberOfRelocations = BR.ReadUInt16();
             NumberOfLinenumbers = BR.ReadUInt16();
             Characteristics = (PESectionFlags)BR.ReadUInt32();
+        }
+
+        public void WritePESection(BinaryWriter BW)
+        {
+            //Ensure the name is at least 8 bytes long by right pdding it
+            BW.Write(Encoding.UTF8.GetBytes(Name.PadRight(Math.Max(8, Name.Length + 1), '\0')), 0, 8);
+            BW.Write(VirtualSize);
+            BW.Write(VirtualAddress);
+            BW.Write(SizeOfRawData);
+            BW.Write(PointerToRawData);
+            BW.Write(PointerToRelocations);
+            BW.Write(PointerToLinenumbers);
+            BW.Write(NumberOfRelocations);
+            BW.Write(NumberOfLinenumbers);
+            BW.Write((uint)Characteristics);
         }
     }
 
@@ -1324,9 +1413,13 @@ namespace BinVer
                     MachineType = (PEMachineType)BR.ReadUInt16();
                     NumberOfSections = BR.ReadUInt16();
                     var tempTime = BR.ReadUInt32();
-                    if (tempTime == uint.MinValue || tempTime == uint.MaxValue)
+                    if (tempTime == uint.MinValue)
                     {
                         CompileTime = DateTime.MinValue;
+                    }
+                    else if (tempTime == uint.MaxValue)
+                    {
+                        CompileTime = DateTime.MaxValue;
                     }
                     else
                     {
@@ -1349,6 +1442,60 @@ namespace BinVer
                         .Select(m => new PESection(BR))
                         .ToArray();
                 }
+            }
+        }
+
+        public void WritePEHeader(BinaryWriter BW)
+        {
+            //Copy of the DOS Stub
+            var Stub = (byte[])DOSStub.Clone();
+
+            //Open Stub as memory
+            using (var MS = new MemoryStream(Stub, true))
+            {
+                //Ensure it's at least as long as needed to reach the offset address and the offset itself
+                while (MS.Length < PE_OFFSET_ADDR && MS.Length < PEOffset)
+                {
+                    MS.WriteByte(0);
+                }
+                //Seek to the offset address
+                MS.Seek(PE_OFFSET_ADDR, SeekOrigin.Begin);
+                //Write Offset to stream
+                MS.Write(BitConverter.GetBytes(PEOffset), 0, 4);
+                //Write entire chunk to the output. Position is now at the start of "PE"
+                BW.Write(MS.ToArray());
+            }
+            BW.Write(new byte[] { 0x50, 0x45, 0x00, 0x00 });
+            BW.Write((ushort)MachineType);
+            BW.Write(NumberOfSections);
+            if (CompileTime == DateTime.MinValue)
+            {
+                BW.Write(uint.MinValue);
+            }
+            else if (CompileTime == DateTime.MaxValue)
+            {
+                BW.Write(uint.MaxValue);
+            }
+            else
+            {
+                BW.Write((uint)Math.Floor(CompileTime.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds));
+            }
+            BW.Write(PointerToSymbolTable);
+            BW.Write(NumberOfSymbols);
+            BW.Write(SizeOfOptionalHeader);
+            BW.Write((ushort)Characteristics);
+        }
+
+        public void WriteCompleteHeaders(BinaryWriter BW)
+        {
+            WritePEHeader(BW);
+            if (OptionalHeader != null)
+            {
+                OptionalHeader.WriteOptionalHeaders(BW);
+            }
+            foreach (var Sec in Sections)
+            {
+                Sec.WritePESection(BW);
             }
         }
     }

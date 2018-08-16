@@ -12,7 +12,7 @@ namespace BinVer
         static void Main(string[] args)
         {
 #if DEBUG
-            if(args==null || args.Length==0)
+            if (args == null || args.Length == 0)
             {
                 args = new string[]
                 {
