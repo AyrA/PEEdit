@@ -677,6 +677,11 @@ namespace BinVer
             {
                 return new Version(_MajorLinkerVersion, _MinorLikerVersion);
             }
+            set
+            {
+                _MajorLinkerVersion = (byte)(value.Major & 0xFF);
+                _MinorLikerVersion = (byte)(value.Minor & 0xFF);
+            }
         }
 
         /// <summary>
@@ -755,6 +760,11 @@ namespace BinVer
             {
                 return new Version(MajorOperatingSystemVersion, MinorOperatingSystemVersion);
             }
+            set
+            {
+                MajorOperatingSystemVersion = (ushort)(value.Major & 0xFFFF);
+                MinorOperatingSystemVersion = (ushort)(value.Minor & 0xFFFF);
+            }
         }
 
         /// <summary>
@@ -766,6 +776,11 @@ namespace BinVer
             {
                 return new Version(MajorImageVersion, MinorImageVersion);
             }
+            set
+            {
+                MajorImageVersion = (ushort)(value.Major & 0xFFFF);
+                MinorImageVersion = (ushort)(value.Minor & 0xFFFF);
+            }
         }
 
         /// <summary>
@@ -776,6 +791,11 @@ namespace BinVer
             get
             {
                 return new Version(MajorSubsystemVersion, MinorSubsystemVersion);
+            }
+            set
+            {
+                MajorSubsystemVersion = (ushort)(value.Major & 0xFFFF);
+                MinorSubsystemVersion = (ushort)(value.Minor & 0xFFFF);
             }
         }
 
@@ -980,23 +1000,16 @@ namespace BinVer
     /// </summary>
     public class OptionalDataDirectories
     {
-        private DataDirectoryEntry[] _Entries;
-
         /// <summary>
         /// The data directories, which form the last part of the optional header,
         /// are listed here.
         /// </summary>
         public DataDirectoryEntry[] Entries
-        {
-            get
-            {
-                return (DataDirectoryEntry[])_Entries.Clone();
-            }
-        }
+        { get; set; }
 
         public OptionalDataDirectories(BinaryReader BR, int NumberOfEntries)
         {
-            _Entries = Enumerable
+            Entries = Enumerable
                 .Range(0, NumberOfEntries)
                 .Select(m => new DataDirectoryEntry(BR, (DataDirectoryEntryType)m))
                 .ToArray();
@@ -1017,6 +1030,7 @@ namespace BinVer
         /// </summary>
         public uint VirtualAddress
         { get; set; }
+
         /// <summary>
         /// This field gives the size in bytes.
         /// </summary>
@@ -1179,9 +1193,6 @@ namespace BinVer
         /// </summary>
         public const int PE_OFFSET_ADDR = 0x3C;
 
-        private byte[] _DOSStub;
-        private PESection[] _Sections;
-
         /// <summary>
         /// The MS-DOS stub is a valid application that runs under MS-DOS.
         /// It is placed at the front of the EXE image.
@@ -1191,10 +1202,7 @@ namespace BinVer
         /// </summary>
         public byte[] DOSStub
         {
-            get
-            {
-                return (byte[])_DOSStub.Clone();
-            }
+            get; set;
         }
 
         /// <summary>
@@ -1298,10 +1306,7 @@ namespace BinVer
 
         public PESection[] Sections
         {
-            get
-            {
-                return (PESection[])_Sections.Clone();
-            }
+            get; set;
         }
 
         public PE(string FileName)
@@ -1313,7 +1318,7 @@ namespace BinVer
                     FS.Seek(PE_OFFSET_ADDR, SeekOrigin.Begin);
                     PEOffset = BR.ReadInt32();
                     FS.Seek(0, SeekOrigin.Begin);
-                    _DOSStub = BR.ReadBytes(PEOffset);
+                    DOSStub = BR.ReadBytes(PEOffset);
                     BR.BaseStream.Seek(PEOffset, SeekOrigin.Begin);
                     ValidPEHeader = BR.ReadBytes(4).SequenceEqual(new byte[] { 0x50, 0x45, 0x00, 0x00 });
                     MachineType = (PEMachineType)BR.ReadUInt16();
@@ -1339,7 +1344,7 @@ namespace BinVer
                     {
                         OptionalHeader = null;
                     }
-                    _Sections = Enumerable
+                    Sections = Enumerable
                         .Range(0, NumberOfSections)
                         .Select(m => new PESection(BR))
                         .ToArray();
