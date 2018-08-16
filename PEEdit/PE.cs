@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace BinVer
+namespace PEEdit
 {
     #region ENUM
 

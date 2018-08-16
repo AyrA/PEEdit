@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BinVer", "BinVer\BinVer.csproj", "{86CD4D15-4949-495C-B979-138A6CBEB6AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PEEdit", "PEEdit\PEEdit.csproj", "{86CD4D15-4949-495C-B979-138A6CBEB6AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

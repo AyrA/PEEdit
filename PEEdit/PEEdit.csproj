@@ -7,8 +7,8 @@
     <ProjectGuid>{86CD4D15-4949-495C-B979-138A6CBEB6AB}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BinVer</RootNamespace>
-    <AssemblyName>BinVer</AssemblyName>
+    <RootNamespace>PEEdit</RootNamespace>
+    <AssemblyName>PEEdit</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

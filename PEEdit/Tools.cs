@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace BinVer
+namespace PEEdit
 {
     public static class Tools
     {
